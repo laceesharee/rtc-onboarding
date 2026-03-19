@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contractor Onboarding — Round the Clock Notary</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-deep: #111b33;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #faf6ef;
+    --cream-dark: #f0e8d8;
+    --white: #ffffff;
+    --text: #2a2a2a;
+    --muted: #666;
+    --border: #ddd0b8;
+    --success: #2d6a4f;
+    --error: #c0392b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy-deep);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--navy-deep);
+    border-bottom: 2px solid var(--gold);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .header-clock {
+    font-size: 2rem;
+    color: var(--gold);
+  }
+
+  .header-brand {
+    font-family: 'Cinzel', serif;
+  }
+
+  .header-brand .top {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+  }
+
+  .header-brand .name {
+    font-size: 1.15rem;
+    color: var(--white);
+    letter-spacing: 0.08em;
+  }
+
+  .header-brand .sub {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* ── HERO BAND ── */
+  .hero-band {
+    background: linear-gradient(135deg, var(--navy) 0%, #243060 100%);
+    padding: 52px 40px 44px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-band::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 30px,
+      rgba(201,168,76,0.04) 30px,
+      rgba(201,168,76,0.04) 31px
+    );
+  }
+
+  .hero-band h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    position: relative;
+  }
+
+  .hero-band .gold-rule {
+    width: 80px;
+    height: 2px;
+    background: var(--gold);
+    margin: 14px auto;
+  }
+
+  .hero-band p {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.75);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.65;
+    position: relative;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--navy);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .progress-step {
+    flex: 1;
+    padding: 14px 10px;
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .progress-step.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .progress-step.done {
+    color: rgba(201,168,76,0.6);
+    border-bottom-color: rgba(201,168,76,0.3);
+  }
+
+  /* ── FORM CONTAINER ── */
+  .form-outer {
+    background: var(--navy-deep);
+    padding: 40px 20px 80px;
+  }
+
+  .form-card {
+    background: var(--cream);
+    max-width: 720px;
+    margin: 0 auto;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  /* ── SECTION PANELS ── */
+  .section-panel {
+    display: none;
+  }
+
+  .section-panel.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    background: var(--navy);
+    padding: 22px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section-icon {
+    width: 38px;
+    height: 38px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: var(--white);
+    letter-spacing: 0.08em;
+  }
+
+  .section-subtitle {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 2px;
+  }
+
+  .section-body {
+    padding: 32px 32px 28px;
+  }
+
+  /* ── FIELDS ── */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .field-row.full {
+    grid-template-columns: 1fr;
+  }
+
+  .field-row.thirds {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  label .req {
+    color: var(--gold);
+    margin-left: 2px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="date"],
+  select,
+  textarea {
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text);
+    border-radius: 3px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+  }
+
+  input.error, select.error, textarea.error {
+    border-color: var(--error);
+  }
+
+  .field-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.4;
+  }
+
+  .field-error {
+    font-size: 0.72rem;
+    color: var(--error);
+    margin-top: 4px;
+    display: none;
+  }
+
+  /* ── PHOTO UPLOAD ── */
+  .photo-upload-zone {
+    border: 2px dashed var(--border);
+    background: var(--white);
+    border-radius: 4px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .photo-upload-zone:hover {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.04);
+  }
+
+  .photo-upload-zone.has-file {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .photo-upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  .upload-label {
+    font-size: 0.85rem;
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  .upload-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .photo-preview {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--gold);
+    margin: 0 auto 8px;
+    display: none;
+  }
+
+  /* ── CHECKBOXES ── */
+  .check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .check-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    accent-color: var(--navy);
+    cursor: pointer;
+  }
+
+  .check-text {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .check-text strong {
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  /* ── DIVIDER ── */
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 24px 0;
+    opacity: 0.4;
+  }
+
+  /* ── DOC INSTRUCTIONS BOX ── */
+  .doc-callout {
+    background: var(--navy);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 4px 4px 0;
+    padding: 18px 20px;
+    margin-top: 8px;
+  }
+
+  .doc-callout .doc-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .doc-callout p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+  }
+
+  .doc-callout a {
+    color: var(--gold-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201,168,76,0.4);
+  }
+
+  /* ── NAV BUTTONS ── */
+  .nav-bar {
+    padding: 20px 32px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--cream-dark);
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-back {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-back:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+  }
+
+  .btn-next {
+    background: var(--navy);
+    color: var(--gold);
+    border: 1.5px solid var(--navy);
+  }
+
+  .btn-next:hover {
+    background: var(--navy-deep);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+
+  .btn-submit {
+    background: var(--gold);
+    color: var(--navy-deep);
+    font-weight: 600;
+    border: 1.5px solid var(--gold);
+  }
+
+  .btn-submit:hover {
+    background: var(--gold-light);
+    box-shadow: 0 4px 16px rgba(201,168,76,0.4);
+  }
+
+  /* ── SUCCESS SCREEN ── */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--cream);
+  }
+
+  .success-screen.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .success-clock {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+  }
+
+  .success-screen h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: var(--navy);
+    margin-bottom: 12px;
+  }
+
+  .success-gold-rule {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin: 16px auto;
+  }
+
+  .success-screen p {
+    font-size: 0.92rem;
+    color: var(--muted);
+    max-width: 420px;
+    margin: 0 auto 10px;
+    line-height: 1.65;
+  }
+
+  .success-next {
+    margin-top: 28px;
+    background: var(--cream-dark);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 28px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+  }
+
+  .success-next .next-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--navy);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .success-next ul {
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 2;
+  }
+
+  .success-next ul li::before {
+    content: '→ ';
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* ── FOOTER ── */
+  .site-footer {
+    background: var(--navy-deep);
+    border-top: 1px solid rgba(201,168,76,0.2);
+    padding: 22px 40px;
+    text-align: center;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.08em;
+  }
+
+  .site-footer span {
+    color: var(--gold);
+    opacity: 0.6;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .site-header { padding: 20px; }
+    .hero-band { padding: 36px 20px 32px; }
+    .hero-band h1 { font-size: 1.35rem; }
+    .progress-wrap { padding: 0 10px; overflow-x: auto; }
+    .progress-step { font-size: 0.55rem; padding: 12px 6px; white-space: nowrap; }
+    .section-body { padding: 24px 20px 20px; }
+    .field-row { grid-template-columns: 1fr; }
+    .field-row.thirds { grid-template-columns: 1fr; }
+    .nav-bar { padding: 16px 20px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header" style="justify-content:center;padding:18px 40px;">
+  <img src="logo_transparent.png" alt="Round the Clock Notary" style="height:56px;width:auto;">
+</header>
+
+<!-- HERO -->
+<div class="hero-band">
+  <h1>Contractor Onboarding</h1>
+  <div class="gold-rule"></div>
+  <p>Welcome to the Round the Clock Notary network. Complete all four sections below. Allow 5–10 minutes. Have your commission certificate and insurance information ready.</p>
+</div>
+
+<!-- PROGRESS -->
+<nav class="progress-wrap" id="progressNav">
+  <div class="progress-step active" data-step="1">Personal</div>
+  <div class="progress-step" data-step="2">Credentials</div>
+  <div class="progress-step" data-step="3">Payment</div>
+  <div class="progress-step" data-step="4">Agreements</div>
+</nav>
+
+<!-- FORM CARD -->
+<div class="form-outer">
+  <div class="form-card" id="formCard">
+
+    <!-- ── STEP 1: PERSONAL INFO ── -->
+    <div class="section-panel active" id="step1">
+      <div class="section-header">
+        <div class="section-icon">01</div>
+        <div>
+          <div class="section-title">Personal Information</div>
+          <div class="section-subtitle">Your contact and profile details</div>
+        </div>
+      </div>
+      <div class="section-body">
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Legal First Name <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="As it appears on commission">
+          </div>
+          <div class="field-group">
+            <label>Legal Last Name <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="As it appears on commission">
+          </div>
+        </div>
+
+        <div class="field-row full">
+          <div class="field-group">
+            <label>Preferred Name</label>
+            <input type="text" id="preferredName" placeholder="What you go by (if different)">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Phone Number <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="(817) 000-0000">
+          </div>
+          <div class="field-group">
+            <label>Email Address <span class="req">*</span></label>
+            <input type="email" id="email" placeholder="your@email.com">
+          </div>
+        </div>
+
+        <div class="field-row full">
+          <div class="field-group">
+            <label>Mailing Address <span class="req">*</span></label>
+            <input type="text" id="address" placeholder="Street address">
+          </div>
+        </div>
+
+        <div class="field-row thirds">
+          <div class="field-group">
+            <label>City <span class="req">*</span></label>
+            <input type="text" id="city" placeholder="Granbury">
+          </div>
+          <div class="field-group">
+            <label>State</label>
+            <input type="text" id="state" value="TX" placeholder="TX">
+          </div>
+          <div class="field-group">
+            <label>ZIP <span class="req">*</span></label>
+            <input type="text" id="zip" placeholder="76048">
+          </div>
+        </div>
+
+        <div class="gold-divider"></div>
+
+        <div class="field-row full">
+          <div class="field-group">
+            <label>Headshot Photo <span class="req">*</span></label>
+            <div class="photo-upload-zone" id="photoZone">
+              <input type="file" id="photoFile" accept="image/*">
+              <img class="photo-preview" id="photoPreview" alt="Preview">
+              <div class="upload-icon" id="uploadIcon">📷</div>
+              <div class="upload-label" id="uploadLabel">Click to upload your headshot</div>
+              <div class="upload-hint">Professional photo preferred · JPG or PNG · Max 5MB</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="nav-bar">
+        <div></div>
+        <button class="btn btn-next" onclick="goNext(1)">Next: Credentials →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 2: CREDENTIALS ── -->
+    <div class="section-panel" id="step2">
+      <div class="section-header">
+        <div class="section-icon">02</div>
+        <div>
+          <div class="section-title">Notary Credentials</div>
+          <div class="section-subtitle">Commission, bond, and insurance details</div>
+        </div>
+      </div>
+      <div class="section-body">
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Texas Commission Number <span class="req">*</span></label>
+            <input type="text" id="commissionNum" placeholder="TX-XXXXXXXX">
+          </div>
+          <div class="field-group">
+            <label>Commission Expiration Date <span class="req">*</span></label>
+            <input type="date" id="commissionExp">
+            <div class="field-hint">Found on your commission certificate</div>
+          </div>
+        </div>
+
+        <div class="gold-divider"></div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Surety Bond Carrier <span class="req">*</span></label>
+            <input type="text" id="bondCarrier" placeholder="Insurance company name">
+          </div>
+          <div class="field-group">
+            <label>Bond Expiration Date <span class="req">*</span></label>
+            <input type="date" id="bondExp">
+          </div>
+        </div>
+
+        <div class="gold-divider"></div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>E&O Insurance Carrier <span class="req">*</span></label>
+            <input type="text" id="eoCarrier" placeholder="Insurance company name">
+          </div>
+          <div class="field-group">
+            <label>E&O Expiration Date <span class="req">*</span></label>
+            <input type="date" id="eoExp">
+          </div>
+        </div>
+
+        <div class="gold-divider"></div>
+
+        <div class="doc-callout">
+          <div class="doc-title">📄 Document Submission</div>
+          <p>After submitting this form, email copies of your <strong style="color:var(--gold-light)">commission certificate</strong>, <strong style="color:var(--gold-light)">surety bond certificate</strong>, and <strong style="color:var(--gold-light)">E&O declaration page</strong> to <a href="javascript:void(0)" onclick="window.location='mai'+'lto:rtcnotary1@gmail.com'"><span class="__cf_email__" data-cfemail="aad8dec9c4c5decbd8d39beacdc7cbc3c684c9c5c7">[email&#160;protected]</span></a>. No documents = no assignments.</p>
+        </div>
+
+      </div>
+      <div class="nav-bar">
+        <button class="btn btn-back" onclick="goBack(2)">← Back</button>
+        <button class="btn btn-next" onclick="goNext(2)">Next: Payment →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: PAYMENT ── -->
+    <div class="section-panel" id="step3">
+      <div class="section-header">
+        <div class="section-icon">03</div>
+        <div>
+          <div class="section-title">Payment Preferences</div>
+          <div class="section-subtitle">Select all methods you accept — a handle is required for each</div>
+        </div>
+      </div>
+      <div class="section-body">
+
+        <div style="font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--navy);margin-bottom:12px;">Payment Methods <span class="req">*</span> <span style="font-size:0.68rem;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400;">(select all that apply)</span></div>
+
+        <div id="payMethodsWrap" style="display:flex;flex-direction:column;gap:14px;">
+
+          <div class="pay-method-row" id="pmZelle">
+            <label class="check-item" style="margin-bottom:6px;">
+              <input type="checkbox" id="ckZelle" onchange="togglePayHandle('zelle')">
+              <span class="check-text"><strong>Zelle</strong></span>
+            </label>
+            <div id="handleZelle" style="display:none;padding-left:30px;">
+              <input type="text" id="payZelle" placeholder="Phone number or email linked to Zelle">
+            </div>
+          </div>
+
+          <div class="pay-method-row" id="pmVenmo">
+            <label class="check-item" style="margin-bottom:6px;">
+              <input type="checkbox" id="ckVenmo" onchange="togglePayHandle('venmo')">
+              <span class="check-text"><strong>Venmo</strong></span>
+            </label>
+            <div id="handleVenmo" style="display:none;padding-left:30px;">
+              <input type="text" id="payVenmo" placeholder="@venmo-username">
+            </div>
+          </div>
+
+          <div class="pay-method-row" id="pmCashapp">
+            <label class="check-item" style="margin-bottom:6px;">
+              <input type="checkbox" id="ckCashapp" onchange="togglePayHandle('cashapp')">
+              <span class="check-text"><strong>Cash App</strong></span>
+            </label>
+            <div id="handleCashapp" style="display:none;padding-left:30px;">
+              <input type="text" id="payCashapp" placeholder="$cashtag">
+            </div>
+          </div>
+
+          <div class="pay-method-row" id="pmCheck">
+            <label class="check-item" style="margin-bottom:6px;">
+              <input type="checkbox" id="ckCheck" onchange="togglePayHandle('check')">
+              <span class="check-text"><strong>Check</strong> <span style="font-weight:300;font-size:0.82rem;">(mailed to address on file)</span></span>
+            </label>
+          </div>
+
+          <div class="pay-method-row" id="pmOther">
+            <label class="check-item" style="margin-bottom:6px;">
+              <input type="checkbox" id="ckOther" onchange="togglePayHandle('other')">
+              <span class="check-text"><strong>Other</strong></span>
+            </label>
+            <div id="handleOther" style="display:none;padding-left:30px;">
+              <input type="text" id="payOther" placeholder="Describe method and account details">
+            </div>
+          </div>
+
+        </div>
+
+        <div id="payMethodError" style="display:none;font-size:0.72rem;color:var(--error);margin-top:8px;">Please select at least one payment method.</div>
+
+        <div class="gold-divider"></div>
+
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:4px;padding:18px 20px;">
+          <div style="font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.1em;color:var(--navy);text-transform:uppercase;margin-bottom:10px;">Fund Contribution — How It Works</div>
+          <p style="font-size:0.85rem;color:var(--muted);line-height:1.7;">For every RTCN-dispatched appointment, <strong style="color:var(--navy)">50% of the base service fee</strong> is remitted to the RTCN Business Fund. The state notary fee ($10) and all travel/mileage fees are yours in full. After-hours and holiday surcharges split 50/50. The monthly fund contribution is <strong style="color:var(--navy)">capped at $150</strong> — once reached, you keep 100% of all fees for the rest of that calendar month. Jobs from your personal Snapdocs profile are entirely yours.</p>
+        </div>
+
+        <div class="gold-divider"></div>
+
+        <div class="field-row full">
+          <div class="field-group">
+            <label>Your Personal Snapdocs Profile URL or Username <span class="req">*</span></label>
+            <input type="text" id="snapdocsProfile" placeholder="https://www.snapdocs.com/notaries/your-name or username">
+            <div class="field-hint">Your individual Snapdocs profile — separate from the RTCN shared profile</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="nav-bar">
+        <button class="btn btn-back" onclick="goBack(3)">← Back</button>
+        <button class="btn btn-next" onclick="goNext(3)">Next: Agreements →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 4: AGREEMENTS ── -->
+    <div class="section-panel" id="step4">
+      <div class="section-header">
+        <div class="section-icon">04</div>
+        <div>
+          <div class="section-title">Agreements & Acknowledgments</div>
+          <div class="section-subtitle">Review and confirm each item before submitting</div>
+        </div>
+      </div>
+      <div class="section-body">
+
+        <div class="check-group">
+
+          <label class="check-item">
+            <input type="checkbox" id="ck1">
+            <span class="check-text"><strong>Contractor Agreement Signed.</strong> I have received, read, and signed the Round the Clock Notary Independent Contractor Agreement.</span>
+          </label>
+
+          <label class="check-item">
+            <input type="checkbox" id="ck2">
+            <span class="check-text"><strong>Fee Schedule Accepted.</strong> I have reviewed the RTCN Fee Schedule, understand all rates, and agree to use only the published schedule when pricing services for RTCN clients.</span>
+          </label>
+
+          <label class="check-item">
+            <input type="checkbox" id="ck3">
+            <span class="check-text"><strong>1099 Independent Contractor Status.</strong> I understand I am an independent contractor, not an employee. I am solely responsible for filing my own taxes and paying all applicable self-employment taxes.</span>
+          </label>
+
+          <label class="check-item">
+            <input type="checkbox" id="ck4">
+            <span class="check-text"><strong>Credential Maintenance.</strong> I agree to maintain my Texas notary commission, surety bond, and E&O insurance in active standing at all times, and to immediately notify RTCN if any credential lapses.</span>
+          </label>
+
+          <label class="check-item">
+            <input type="checkbox" id="ck5">
+            <span class="check-text"><strong>Brand Standards.</strong> I agree to represent myself as an RTCN contractor only while performing services under this agreement, and not to use the Round the Clock Notary name, logo, or brand for any other purpose.</span>
+          </label>
+
+          <label class="check-item">
+            <input type="checkbox" id="ck6">
+            <span class="check-text"><strong>Document Submission Requirement.</strong> I understand that my commission certificate, surety bond certificate, and E&O declaration page must be on file with RTCN before I can receive my first assignment.</span>
+          </label>
+
+        </div>
+
+        <div class="gold-divider"></div>
+
+        <div class="field-row full">
+          <div class="field-group">
+            <label>Electronic Signature — Full Legal Name <span class="req">*</span></label>
+            <input type="text" id="eSig" placeholder="Type your full legal name as your signature">
+            <div class="field-hint">Typing your name here constitutes your electronic signature on all acknowledgments above.</div>
+          </div>
+        </div>
+
+        <div class="field-row full">
+          <div class="field-group">
+            <label>Today's Date <span class="req">*</span></label>
+            <input type="date" id="sigDate">
+          </div>
+        </div>
+
+      </div>
+      <div class="nav-bar">
+        <button class="btn btn-back" onclick="goBack(4)">← Back</button>
+        <button class="btn btn-submit" onclick="submitForm()">Submit Onboarding ✓</button>
+      </div>
+    </div>
+
+    <!-- ── SUCCESS ── -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-clock"></div>
+      <h2>Welcome to the Network</h2>
+      <div class="success-gold-rule"></div>
+      <p>Your onboarding form has been submitted. A confirmation has been sent to your email address.</p>
+      <p>Sharee will review your information and follow up within 1–2 business days.</p>
+      <div class="success-next" style="margin-top:28px;">
+        <div class="next-title">Your Next Steps</div>
+        <ul>
+          <li>Email your commission cert, bond cert, and E&O dec page to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84f6f0e7eaebf0e5f6fdb5c4e3e9e5ede8aae7ebe9">[email&#160;protected]</a></li>
+          <li>Ensure your Snapdocs profile is active and credentials uploaded</li>
+          <li>Ensure your Notary Gadget account is active</li>
+          <li>Watch for a welcome email with your first assignment details</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /form-card -->
+</div><!-- /form-outer -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <span>Round the Clock Notary</span> · Hood County, Texas · Available 24/7 · ByPatience LLC DBA
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false">
+document.addEventListener('DOMContentLoaded', function() {
+
+  var currentStep = 1;
+
+  // Photo preview
+  document.getElementById('photoFile').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var preview = document.getElementById('photoPreview');
+      var icon = document.getElementById('uploadIcon');
+      var lbl = document.getElementById('uploadLabel');
+      preview.src = ev.target.result;
+      preview.style.display = 'block';
+      icon.style.display = 'none';
+      lbl.textContent = file.name;
+      document.getElementById('photoZone').classList.add('has-file');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Toggle payment handle fields
+  window.togglePayHandle = function(method) {
+    var key = method.charAt(0).toUpperCase() + method.slice(1);
+    var handleDiv = document.getElementById('handle' + key);
+    var ck = document.getElementById('ck' + key);
+    if (handleDiv && ck) {
+      handleDiv.style.display = ck.checked ? 'block' : 'none';
+      if (!ck.checked) {
+        var inp = handleDiv.querySelector('input');
+        if (inp) { inp.value = ''; inp.classList.remove('error'); }
+      }
+    }
+  };
+
+  // Set today's date in sig date field
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('sigDate').value = today;
+
+  // Expose functions to global scope
+  window.goNext = goNext;
+  window.goBack = goBack;
+  window.submitForm = submitForm;
+
+  function goNext(step) {
+    if (!validateStep(step)) return;
+    showStep(step + 1);
+  }
+
+  function goBack(step) {
+    showStep(step - 1);
+  }
+
+  function showStep(n) {
+    document.getElementById('step' + currentStep).classList.remove('active');
+    document.querySelectorAll('.progress-step').forEach(function(s) {
+      var sn = parseInt(s.getAttribute('data-step'));
+      s.classList.remove('active', 'done');
+      if (sn < n) s.classList.add('done');
+      if (sn === n) s.classList.add('active');
+    });
+    currentStep = n;
+    document.getElementById('step' + n).classList.add('active');
+    document.getElementById('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function validateStep(step) {
+    var ok = true;
+
+    if (step === 1) {
+      ok = req('firstName') & req('lastName') & req('phone') & req('email') & req('address') & req('city') & req('zip');
+      if (!document.getElementById('photoFile').files.length) {
+        document.getElementById('photoZone').style.borderColor = 'var(--error)';
+        ok = false;
+      } else {
+        document.getElementById('photoZone').style.borderColor = '';
+      }
+    }
+
+    if (step === 2) {
+      ok = req('commissionNum') & req('commissionExp') & req('bondCarrier') & req('bondExp') & req('eoCarrier') & req('eoExp');
+    }
+
+    if (step === 3) {
+      var methods = ['Zelle','Venmo','Cashapp','Check','Other'];
+      var anyChecked = methods.some(function(m) { return document.getElementById('ck'+m) && document.getElementById('ck'+m).checked; });
+      if (!anyChecked) {
+        document.getElementById('payMethodError').style.display = 'block';
+        ok = false;
+      } else {
+        document.getElementById('payMethodError').style.display = 'none';
+      }
+      ['Zelle','Venmo','Cashapp','Other'].forEach(function(m) {
+        var ck = document.getElementById('ck'+m);
+        var hdl = document.getElementById('pay'+m);
+        if (ck && ck.checked && hdl && !hdl.value.trim()) {
+          hdl.classList.add('error');
+          ok = false;
+        }
+      });
+      ok = ok & req('snapdocsProfile');
+    }
+
+    if (step === 4) {
+      var allChecked = true;
+      ['ck1','ck2','ck3','ck4','ck5','ck6'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el.checked) {
+          allChecked = false;
+          el.closest('.check-item').style.outline = '2px solid var(--error)';
+          el.closest('.check-item').style.borderRadius = '4px';
+          el.closest('.check-item').style.padding = '4px';
+          el.addEventListener('change', function() {
+            el.closest('.check-item').style.outline = '';
+            el.closest('.check-item').style.padding = '';
+          }, { once: true });
+        }
+      });
+      if (!allChecked) ok = false;
+      ok = ok & req('eSig') & req('sigDate');
+    }
+
+    return !!ok;
+  }
+
+  function req(id) {
+    var el = document.getElementById(id);
+    if (!el) return true;
+    var val = el.value.trim();
+    if (!val) {
+      el.classList.add('error');
+      el.addEventListener('input', function() { el.classList.remove('error'); }, { once: true });
+      return false;
+    }
+    el.classList.remove('error');
+    return true;
+  }
+
+  function submitForm() {
+    if (!validateStep(4)) return;
+
+    var btn = document.querySelector('.btn-submit');
+    btn.textContent = 'Submitting...';
+    btn.disabled = true;
+
+    // Collect all form data
+    var data = {
+      firstName:     document.getElementById('firstName').value.trim(),
+      lastName:      document.getElementById('lastName').value.trim(),
+      preferredName: document.getElementById('preferredName').value.trim(),
+      phone:         document.getElementById('phone').value.trim(),
+      email:         document.getElementById('email').value.trim(),
+      address:       document.getElementById('address').value.trim(),
+      city:          document.getElementById('city').value.trim(),
+      state:         document.getElementById('state').value.trim(),
+      zip:           document.getElementById('zip').value.trim(),
+      commissionNum: document.getElementById('commissionNum').value.trim(),
+      commissionExp: document.getElementById('commissionExp').value,
+      bondCarrier:   document.getElementById('bondCarrier').value.trim(),
+      bondExp:       document.getElementById('bondExp').value,
+      eoCarrier:     document.getElementById('eoCarrier').value.trim(),
+      eoExp:         document.getElementById('eoExp').value,
+      payMethods:    (function() {
+        var out = [];
+        if (document.getElementById('ckZelle') && document.getElementById('ckZelle').checked) out.push('Zelle: ' + document.getElementById('payZelle').value.trim());
+        if (document.getElementById('ckVenmo') && document.getElementById('ckVenmo').checked) out.push('Venmo: ' + document.getElementById('payVenmo').value.trim());
+        if (document.getElementById('ckCashapp') && document.getElementById('ckCashapp').checked) out.push('CashApp: ' + document.getElementById('payCashapp').value.trim());
+        if (document.getElementById('ckCheck') && document.getElementById('ckCheck').checked) out.push('Check (mailed)');
+        if (document.getElementById('ckOther') && document.getElementById('ckOther').checked) out.push('Other: ' + document.getElementById('payOther').value.trim());
+        return out.join(' | ');
+      })(),
+      snapdocsProfile: document.getElementById('snapdocsProfile').value.trim(),
+      eSig:          document.getElementById('eSig').value.trim(),
+      sigDate:       document.getElementById('sigDate').value,
+      submittedAt:   new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
+    };
+
+    // TODO: Replace this URL with your Google Apps Script Web App URL
+    var APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+    if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+      // Dev mode — just show success
+      showSuccess(data);
+      return;
+    }
+
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function() {
+      showSuccess(data);
+    }).catch(function() {
+      showSuccess(data); // still show success; Apps Script no-cors always returns opaque
+    });
+  }
+
+  function showSuccess(data) {
+    document.getElementById('step4').classList.remove('active');
+    document.querySel
