@@ -599,7 +599,71 @@
 </div>
 
 <!-- PROGRESS -->
-<nav class="progress-wrap" id="progressNav">
+<!-- WELCOME PREP SCREEN -->
+<div id="welcomeScreen" style="background:var(--navy-deep);padding:40px 20px 80px;">
+  <div style="background:var(--cream);max-width:720px;margin:0 auto;border-radius:4px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+
+    <div style="background:var(--navy);padding:22px 32px;display:flex;align-items:center;gap:14px;">
+      <div style="width:38px;height:38px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--gold);flex-shrink:0;">✓</div>
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:0.95rem;color:var(--white);letter-spacing:0.08em;">Before You Begin</div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-top:2px;">Have the following ready before starting</div>
+      </div>
+    </div>
+
+    <div style="padding:32px 32px 28px;">
+      <p style="font-size:0.92rem;color:var(--muted);line-height:1.7;margin-bottom:24px;">This form takes 5–10 minutes. Have the following information in hand before you start. You will not be able to save and return.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:4px;padding:16px 18px;">
+          <div style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;">📜 Notary Commission</div>
+          <ul style="list-style:none;font-size:0.83rem;color:var(--text);line-height:2;">
+            <li>→ Commission certificate number</li>
+            <li>→ Commission expiration date</li>
+          </ul>
+        </div>
+
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:4px;padding:16px 18px;">
+          <div style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;">🔒 Surety Bond</div>
+          <ul style="list-style:none;font-size:0.83rem;color:var(--text);line-height:2;">
+            <li>→ Bond carrier / company name</li>
+            <li>→ Bond expiration date</li>
+          </ul>
+        </div>
+
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:4px;padding:16px 18px;">
+          <div style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;">🛡️ E&amp;O Insurance</div>
+          <ul style="list-style:none;font-size:0.83rem;color:var(--text);line-height:2;">
+            <li>→ E&amp;O carrier / company name</li>
+            <li>→ E&amp;O expiration date</li>
+          </ul>
+        </div>
+
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:4px;padding:16px 18px;">
+          <div style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;">💻 Platform Profiles</div>
+          <ul style="list-style:none;font-size:0.83rem;color:var(--text);line-height:2;">
+            <li>→ Snapdocs profile URL or username</li>
+            <li>→ Notary Gadget account info</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div style="background:var(--navy);border-left:4px solid var(--gold);border-radius:0 4px 4px 0;padding:16px 20px;margin-bottom:28px;">
+        <div style="font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;">📸 Professional Headshot</div>
+        <p style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">You will be asked to acknowledge sending a professional headshot within 14 days of submission. If you need assistance with this, contact RTCN before proceeding — we are happy to help.</p>
+      </div>
+
+      <div style="text-align:center;">
+        <button class="btn btn-submit" onclick="startForm()" style="font-size:0.85rem;padding:14px 40px;">I Have Everything Ready — Begin →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<nav class="progress-wrap" id="progressNav" style="display:none;">
   <div class="progress-step active" data-step="1">Personal</div>
   <div class="progress-step" data-step="2">Credentials</div>
   <div class="progress-step" data-step="3">Payment</div>
@@ -607,7 +671,7 @@
 </nav>
 
 <!-- FORM CARD -->
-<div class="form-outer">
+<div class="form-outer" id="formOuter" style="display:none;">
   <div class="form-card" id="formCard">
 
     <!-- ── STEP 1: PERSONAL INFO ── -->
@@ -676,14 +740,12 @@
 
         <div class="field-row full">
           <div class="field-group">
-            <label>Headshot Photo <span class="req">*</span></label>
-            <div class="photo-upload-zone" id="photoZone">
-              <input type="file" id="photoFile" accept="image/*">
-              <img class="photo-preview" id="photoPreview" alt="Preview">
-              <div class="upload-icon" id="uploadIcon">📷</div>
-              <div class="upload-label" id="uploadLabel">Click to upload your headshot</div>
-              <div class="upload-hint">Professional photo preferred · JPG or PNG · Max 5MB</div>
-            </div>
+            <label>Headshot Photo</label>
+            <label class="check-item" style="background:var(--white);border:1.5px solid var(--border);border-radius:3px;padding:14px 16px;">
+              <input type="checkbox" id="photoAck">
+              <span class="check-text">I will email a professional headshot to <strong id="photoEmail"></strong> within 14 days of submitting this form.</span>
+            </label>
+            <div class="field-hint" style="margin-top:8px;">Not required to submit. If you need assistance, contact RTCN before proceeding.</div>
           </div>
         </div>
 
@@ -919,10 +981,10 @@
     <!-- ── SUCCESS ── -->
     <div class="success-screen" id="successScreen">
       <div class="success-clock"></div>
-      <h2>Welcome to the Network</h2>
+      <h2>Welcome to the Team</h2>
       <div class="success-gold-rule"></div>
       <p>Your onboarding form has been submitted. A confirmation has been sent to your email address.</p>
-      <p>Sharee will review your information and follow up within 1–2 business days.</p>
+      <p>RTCN will review your information and be in touch within 1–2 business days.</p>
       <div class="success-next" style="margin-top:28px;">
         <div class="next-title">Your Next Steps</div>
         <ul>
@@ -945,6 +1007,13 @@
 // All functions at global scope — CF cannot kill them here
 
 var currentStep = 1;
+
+window.startForm = function() {
+  document.getElementById('welcomeScreen').style.display = 'none';
+  document.getElementById('progressNav').style.display = 'flex';
+  document.getElementById('formOuter').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
 window.goNext = function(step) {
   if (validateStep(step)) showStep(step + 1);
@@ -1106,6 +1175,8 @@ window.submitForm = function() {
 };
 
 function showSuccess(data) {
+  var el = document.getElementById('successEmail');
+  if (el) el.textContent = 'info' + '@' + 'roundtheclocknotary.com';
   document.getElementById('step4').classList.remove('active');
   document.querySelectorAll('.progress-step').forEach(function(s) {
     s.classList.add('done');
@@ -1120,13 +1191,17 @@ document.addEventListener('DOMContentLoaded', function() {
   var today = new Date().toISOString().split('T')[0];
   document.getElementById('sigDate').value = today;
 
-  document.getElementById('photoFile').addEventListener('change', function(e) {
+  // Fix CF-protected emails
+  var em = 'info' + '@' + 'roundtheclocknotary.com';
+  var photoEl = document.getElementById('photoEmail');
+  if (photoEl) photoEl.textContent = em;
+  // Success screen email set on showSuccess call
+
+  document.getElementById('photoFile') && document.getElementById('photoFile').addEventListener('change', function(e) {
     var file = e.target.files[0];
     if (!file) return;
     var lbl = document.getElementById('uploadLabel');
     lbl.textContent = '✓ ' + file.name + ' selected';
-    document.getElementById('photoZone').classList.add('has-file');
-    document.getElementById('uploadIcon').textContent = '✓';
   });
 });
 </script>
