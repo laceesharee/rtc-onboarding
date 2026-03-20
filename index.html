@@ -942,7 +942,7 @@
   <span>Round the Clock Notary</span> · Hood County, Texas · Available 24/7 · ByPatience LLC DBA
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false">
+<script data-cfasync="false">
 document.addEventListener('DOMContentLoaded', function() {
 
   var currentStep = 1;
@@ -979,14 +979,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
-  // Set today's date in sig date field
-  var today = new Date().toISOString().split('T')[0];
-  document.getElementById('sigDate').value = today;
-
-  // Expose functions to global scope
-  window.goNext = goNext;
-  window.goBack = goBack;
+  window.goNext = function(step) { if (validateStep(step)) showStep(step + 1); };
+  window.goBack = function(step) { showStep(step - 1); };
   window.submitForm = submitForm;
+
+  // Init on DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById('sigDate').value = today;
+    document.getElementById('photoFile').addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var preview = document.getElementById('photoPreview');
+        var icon = document.getElementById('uploadIcon');
+        var lbl = document.getElementById('uploadLabel');
+        preview.src = ev.target.result;
+        preview.style.display = 'block';
+        icon.style.display = 'none';
+        lbl.textContent = file.name;
+        document.getElementById('photoZone').classList.add('has-file');
+      };
+      reader.readAsDataURL(file);
+    });
+  });
 
   function goNext(step) {
     if (!validateStep(step)) return;
