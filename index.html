@@ -941,224 +941,194 @@
 <footer class="site-footer">
   <span>Round the Clock Notary</span> · Hood County, Texas · Available 24/7 · ByPatience LLC DBA
 </footer>
-
 <script data-cfasync="false">
+// All functions at global scope — CF cannot kill them here
+
+var currentStep = 1;
+
+window.goNext = function(step) {
+  if (validateStep(step)) showStep(step + 1);
+};
+
+window.goBack = function(step) {
+  showStep(step - 1);
+};
+
+window.togglePayHandle = function(method) {
+  var key = method.charAt(0).toUpperCase() + method.slice(1);
+  var handleDiv = document.getElementById('handle' + key);
+  var ck = document.getElementById('ck' + key);
+  if (handleDiv && ck) {
+    handleDiv.style.display = ck.checked ? 'block' : 'none';
+    if (!ck.checked) {
+      var inp = handleDiv.querySelector('input');
+      if (inp) { inp.value = ''; inp.classList.remove('error'); }
+    }
+  }
+};
+
+function showStep(n) {
+  document.getElementById('step' + currentStep).classList.remove('active');
+  document.querySelectorAll('.progress-step').forEach(function(s) {
+    var sn = parseInt(s.getAttribute('data-step'));
+    s.classList.remove('active', 'done');
+    if (sn < n) s.classList.add('done');
+    if (sn === n) s.classList.add('active');
+  });
+  currentStep = n;
+  document.getElementById('step' + n).classList.add('active');
+  document.getElementById('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function validateStep(step) {
+  var ok = true;
+
+  if (step === 1) {
+    ok = req('firstName') & req('lastName') & req('phone') & req('email') & req('address') & req('city') & req('zip');
+    // Photo not required — contractor has 14 days to email
+  }
+
+  if (step === 2) {
+    ok = req('commissionNum') & req('commissionExp') & req('bondCarrier') & req('bondExp') & req('eoCarrier') & req('eoExp');
+  }
+
+  if (step === 3) {
+    var methods = ['Zelle','Venmo','Cashapp','Check','Other'];
+    var anyChecked = methods.some(function(m) {
+      return document.getElementById('ck'+m) && document.getElementById('ck'+m).checked;
+    });
+    if (!anyChecked) {
+      document.getElementById('payMethodError').style.display = 'block';
+      ok = false;
+    } else {
+      document.getElementById('payMethodError').style.display = 'none';
+    }
+    ['Zelle','Venmo','Cashapp','Other'].forEach(function(m) {
+      var ck = document.getElementById('ck'+m);
+      var hdl = document.getElementById('pay'+m);
+      if (ck && ck.checked && hdl && !hdl.value.trim()) {
+        hdl.classList.add('error');
+        ok = false;
+      }
+    });
+    ok = ok & req('snapdocsProfile');
+  }
+
+  if (step === 4) {
+    var allChecked = true;
+    ['ck1','ck2','ck3','ck4','ck5','ck6'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el.checked) {
+        allChecked = false;
+        el.closest('.check-item').style.outline = '2px solid var(--error)';
+        el.closest('.check-item').style.borderRadius = '4px';
+        el.closest('.check-item').style.padding = '4px';
+        el.addEventListener('change', function() {
+          el.closest('.check-item').style.outline = '';
+          el.closest('.check-item').style.padding = '';
+        }, { once: true });
+      }
+    });
+    if (!allChecked) ok = false;
+    ok = ok & req('eSig') & req('sigDate');
+  }
+
+  return !!ok;
+}
+
+function req(id) {
+  var el = document.getElementById(id);
+  if (!el) return true;
+  var val = el.value.trim();
+  if (!val) {
+    el.classList.add('error');
+    el.addEventListener('input', function() { el.classList.remove('error'); }, { once: true });
+    return false;
+  }
+  el.classList.remove('error');
+  return true;
+}
+
+window.submitForm = function() {
+  if (!validateStep(4)) return;
+  var btn = document.querySelector('.btn-submit');
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+
+  var payMethods = (function() {
+    var out = [];
+    if (document.getElementById('ckZelle') && document.getElementById('ckZelle').checked) out.push('Zelle: ' + document.getElementById('payZelle').value.trim());
+    if (document.getElementById('ckVenmo') && document.getElementById('ckVenmo').checked) out.push('Venmo: ' + document.getElementById('payVenmo').value.trim());
+    if (document.getElementById('ckCashapp') && document.getElementById('ckCashapp').checked) out.push('CashApp: ' + document.getElementById('payCashapp').value.trim());
+    if (document.getElementById('ckCheck') && document.getElementById('ckCheck').checked) out.push('Check (mailed)');
+    if (document.getElementById('ckOther') && document.getElementById('ckOther').checked) out.push('Other: ' + document.getElementById('payOther').value.trim());
+    return out.join(' | ');
+  })();
+
+  var data = {
+    firstName:       document.getElementById('firstName').value.trim(),
+    lastName:        document.getElementById('lastName').value.trim(),
+    preferredName:   document.getElementById('preferredName').value.trim(),
+    phone:           document.getElementById('phone').value.trim(),
+    email:           document.getElementById('email').value.trim(),
+    address:         document.getElementById('address').value.trim(),
+    city:            document.getElementById('city').value.trim(),
+    state:           document.getElementById('state').value.trim(),
+    zip:             document.getElementById('zip').value.trim(),
+    commissionNum:   document.getElementById('commissionNum').value.trim(),
+    commissionExp:   document.getElementById('commissionExp').value,
+    bondCarrier:     document.getElementById('bondCarrier').value.trim(),
+    bondExp:         document.getElementById('bondExp').value,
+    eoCarrier:       document.getElementById('eoCarrier').value.trim(),
+    eoExp:           document.getElementById('eoExp').value,
+    payMethods:      payMethods,
+    snapdocsProfile: document.getElementById('snapdocsProfile').value.trim(),
+    eSig:            document.getElementById('eSig').value.trim(),
+    sigDate:         document.getElementById('sigDate').value,
+    submittedAt:     new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
+  };
+
+  var APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    showSuccess(data);
+    return;
+  }
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(function() {
+    showSuccess(data);
+  }).catch(function() {
+    showSuccess(data);
+  });
+};
+
+function showSuccess(data) {
+  document.getElementById('step4').classList.remove('active');
+  document.querySelectorAll('.progress-step').forEach(function(s) {
+    s.classList.add('done');
+    s.classList.remove('active');
+  });
+  document.getElementById('successScreen').classList.add('active');
+  document.getElementById('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Init
 document.addEventListener('DOMContentLoaded', function() {
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('sigDate').value = today;
 
-  var currentStep = 1;
-
-  // Photo preview
   document.getElementById('photoFile').addEventListener('change', function(e) {
     var file = e.target.files[0];
     if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(ev) {
-      var preview = document.getElementById('photoPreview');
-      var icon = document.getElementById('uploadIcon');
-      var lbl = document.getElementById('uploadLabel');
-      preview.src = ev.target.result;
-      preview.style.display = 'block';
-      icon.style.display = 'none';
-      lbl.textContent = file.name;
-      document.getElementById('photoZone').classList.add('has-file');
-    };
-    reader.readAsDataURL(file);
+    var lbl = document.getElementById('uploadLabel');
+    lbl.textContent = '✓ ' + file.name + ' selected';
+    document.getElementById('photoZone').classList.add('has-file');
+    document.getElementById('uploadIcon').textContent = '✓';
   });
-
-  // Toggle payment handle fields
-  window.togglePayHandle = function(method) {
-    var key = method.charAt(0).toUpperCase() + method.slice(1);
-    var handleDiv = document.getElementById('handle' + key);
-    var ck = document.getElementById('ck' + key);
-    if (handleDiv && ck) {
-      handleDiv.style.display = ck.checked ? 'block' : 'none';
-      if (!ck.checked) {
-        var inp = handleDiv.querySelector('input');
-        if (inp) { inp.value = ''; inp.classList.remove('error'); }
-      }
-    }
-  };
-
-  window.goNext = function(step) { if (validateStep(step)) showStep(step + 1); };
-  window.goBack = function(step) { showStep(step - 1); };
-  window.submitForm = submitForm;
-
-  // Init on DOM ready
-  document.addEventListener('DOMContentLoaded', function() {
-    var today = new Date().toISOString().split('T')[0];
-    document.getElementById('sigDate').value = today;
-    document.getElementById('photoFile').addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        var preview = document.getElementById('photoPreview');
-        var icon = document.getElementById('uploadIcon');
-        var lbl = document.getElementById('uploadLabel');
-        preview.src = ev.target.result;
-        preview.style.display = 'block';
-        icon.style.display = 'none';
-        lbl.textContent = file.name;
-        document.getElementById('photoZone').classList.add('has-file');
-      };
-      reader.readAsDataURL(file);
-    });
-  });
-
-  function goNext(step) {
-    if (!validateStep(step)) return;
-    showStep(step + 1);
-  }
-
-  function goBack(step) {
-    showStep(step - 1);
-  }
-
-  function showStep(n) {
-    document.getElementById('step' + currentStep).classList.remove('active');
-    document.querySelectorAll('.progress-step').forEach(function(s) {
-      var sn = parseInt(s.getAttribute('data-step'));
-      s.classList.remove('active', 'done');
-      if (sn < n) s.classList.add('done');
-      if (sn === n) s.classList.add('active');
-    });
-    currentStep = n;
-    document.getElementById('step' + n).classList.add('active');
-    document.getElementById('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function validateStep(step) {
-    var ok = true;
-
-    if (step === 1) {
-      ok = req('firstName') & req('lastName') & req('phone') & req('email') & req('address') & req('city') & req('zip');
-      if (!document.getElementById('photoFile').files.length) {
-        document.getElementById('photoZone').style.borderColor = 'var(--error)';
-        ok = false;
-      } else {
-        document.getElementById('photoZone').style.borderColor = '';
-      }
-    }
-
-    if (step === 2) {
-      ok = req('commissionNum') & req('commissionExp') & req('bondCarrier') & req('bondExp') & req('eoCarrier') & req('eoExp');
-    }
-
-    if (step === 3) {
-      var methods = ['Zelle','Venmo','Cashapp','Check','Other'];
-      var anyChecked = methods.some(function(m) { return document.getElementById('ck'+m) && document.getElementById('ck'+m).checked; });
-      if (!anyChecked) {
-        document.getElementById('payMethodError').style.display = 'block';
-        ok = false;
-      } else {
-        document.getElementById('payMethodError').style.display = 'none';
-      }
-      ['Zelle','Venmo','Cashapp','Other'].forEach(function(m) {
-        var ck = document.getElementById('ck'+m);
-        var hdl = document.getElementById('pay'+m);
-        if (ck && ck.checked && hdl && !hdl.value.trim()) {
-          hdl.classList.add('error');
-          ok = false;
-        }
-      });
-      ok = ok & req('snapdocsProfile');
-    }
-
-    if (step === 4) {
-      var allChecked = true;
-      ['ck1','ck2','ck3','ck4','ck5','ck6'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (!el.checked) {
-          allChecked = false;
-          el.closest('.check-item').style.outline = '2px solid var(--error)';
-          el.closest('.check-item').style.borderRadius = '4px';
-          el.closest('.check-item').style.padding = '4px';
-          el.addEventListener('change', function() {
-            el.closest('.check-item').style.outline = '';
-            el.closest('.check-item').style.padding = '';
-          }, { once: true });
-        }
-      });
-      if (!allChecked) ok = false;
-      ok = ok & req('eSig') & req('sigDate');
-    }
-
-    return !!ok;
-  }
-
-  function req(id) {
-    var el = document.getElementById(id);
-    if (!el) return true;
-    var val = el.value.trim();
-    if (!val) {
-      el.classList.add('error');
-      el.addEventListener('input', function() { el.classList.remove('error'); }, { once: true });
-      return false;
-    }
-    el.classList.remove('error');
-    return true;
-  }
-
-  function submitForm() {
-    if (!validateStep(4)) return;
-
-    var btn = document.querySelector('.btn-submit');
-    btn.textContent = 'Submitting...';
-    btn.disabled = true;
-
-    // Collect all form data
-    var data = {
-      firstName:     document.getElementById('firstName').value.trim(),
-      lastName:      document.getElementById('lastName').value.trim(),
-      preferredName: document.getElementById('preferredName').value.trim(),
-      phone:         document.getElementById('phone').value.trim(),
-      email:         document.getElementById('email').value.trim(),
-      address:       document.getElementById('address').value.trim(),
-      city:          document.getElementById('city').value.trim(),
-      state:         document.getElementById('state').value.trim(),
-      zip:           document.getElementById('zip').value.trim(),
-      commissionNum: document.getElementById('commissionNum').value.trim(),
-      commissionExp: document.getElementById('commissionExp').value,
-      bondCarrier:   document.getElementById('bondCarrier').value.trim(),
-      bondExp:       document.getElementById('bondExp').value,
-      eoCarrier:     document.getElementById('eoCarrier').value.trim(),
-      eoExp:         document.getElementById('eoExp').value,
-      payMethods:    (function() {
-        var out = [];
-        if (document.getElementById('ckZelle') && document.getElementById('ckZelle').checked) out.push('Zelle: ' + document.getElementById('payZelle').value.trim());
-        if (document.getElementById('ckVenmo') && document.getElementById('ckVenmo').checked) out.push('Venmo: ' + document.getElementById('payVenmo').value.trim());
-        if (document.getElementById('ckCashapp') && document.getElementById('ckCashapp').checked) out.push('CashApp: ' + document.getElementById('payCashapp').value.trim());
-        if (document.getElementById('ckCheck') && document.getElementById('ckCheck').checked) out.push('Check (mailed)');
-        if (document.getElementById('ckOther') && document.getElementById('ckOther').checked) out.push('Other: ' + document.getElementById('payOther').value.trim());
-        return out.join(' | ');
-      })(),
-      snapdocsProfile: document.getElementById('snapdocsProfile').value.trim(),
-      eSig:          document.getElementById('eSig').value.trim(),
-      sigDate:       document.getElementById('sigDate').value,
-      submittedAt:   new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
-    };
-
-    // TODO: Replace this URL with your Google Apps Script Web App URL
-    var APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
-
-    if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-      // Dev mode — just show success
-      showSuccess(data);
-      return;
-    }
-
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    }).then(function() {
-      showSuccess(data);
-    }).catch(function() {
-      showSuccess(data); // still show success; Apps Script no-cors always returns opaque
-    });
-  }
-
-  function showSuccess(data) {
-    document.getElementById('step4').classList.remove('active');
-    document.querySel
+});
+</script>
+</body>
+</html>
